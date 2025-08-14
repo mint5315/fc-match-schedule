@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>피파 경기 일정</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #222;
+      color: #fff;
+      padding: 15px;
+      text-align: center;
+      font-size: 1.4em;
+      font-weight: bold;
+    }
+    .search-box {
+      text-align: center;
+      margin: 15px 0;
+    }
+    .search-box input {
+      padding: 8px;
+      font-size: 1em;
+      width: 80%;
+      max-width: 400px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .table-container {
+      overflow-x: auto;
+      padding: 0 10px;
+    }
+    table {
+      min-width: 800px;
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    th {
+      background: #333;
+      color: white;
+    }
+    tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+    tr:hover {
+      background: #f1f1f1;
+    }
+    .status {
+      font-size: 0.85em;
+      display: block;
+      margin-top: 3px;
+    }
+    .done {
+      color: green;
+    }
+    .pending {
+      color: orange;
+    }
+    .highlight-btn {
+      background: #007BFF;
+      color: white;
+      padding: 5px 8px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .highlight-btn:hover {
+      background: #0056b3;
+    }
+    /* 관리자 모드 */
+    .admin-panel {
+      background: #fff;
+      padding: 15px;
+      margin: 20px auto;
+      width: 90%;
+      max-width: 600px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    .admin-panel h3 {
+      margin-top: 0;
+    }
+    .admin-panel input, .admin-panel select {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .admin-panel button {
+      background: #28a745;
+      color: white;
+      padding: 8px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .admin-panel button:hover {
+      background: #218838;
+    }
+  </style>
+</head>
+<body>
+  <header>⚽ 피파 경기 일정</header>
+  
+  <!-- 검색 -->
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="선수 이름으로 검색 (예: 민기)">
+  </div>
+
+  <!-- 관리자 모드 -->
+  <div class="admin-panel">
+    <h3>관리자 경기 업데이트</h3>
+    <label>일차 선택:</label>
+    <select id="matchDay">
+      <option value="">-- 선택 --</option>
+    </select>
+    <label>경기 상태:</label>
+    <select id="matchStatus">
+      <option value="⏳ 예정">⏳ 예정</option>
+      <option value="✅ 끝남">✅ 끝남</option>
+    </select>
+    <label>하이라이트 영상 URL:</label>
+    <input type="text" id="highlightUrl" placeholder="유튜브/영상 링크 입력">
+    <button id="updateBtn">업데이트</button>
+  </div>
+
+  <!-- 경기 일정 -->
+  <div class="table-container">
+    <table id="matchTable">
+      <thead>
+        <tr>
+          <th>일차</th>
+          <th>그룹 1</th>
+          <th>그룹 2</th>
+          <th>그룹 3</th>
+          <th>하이라이트</th>
+        </tr>
+      </thead>
+      <tbody>
+  <tr data-day="1"><td>1일차 <span class="status pending">⏳ 예정</span></td><td>동운 vs 인혁</td><td>태경 vs 율재</td><td>찬규 vs 현호</td><td></td></tr>
+  <tr data-day="2"><td>2일차 <span class="status pending">⏳ 예정</span></td><td>민기 vs 현준</td><td>현수 vs 재은</td><td>주현 vs 규빈</td><td></td></tr>
+  <tr data-day="3"><td>3일차 <span class="status pending">⏳ 예정</span></td><td>민기 vs 동운</td><td>태경 vs 현수</td><td>찬규 vs 주현</td><td></td></tr>
+  <tr data-day="4"><td>4일차 <span class="status pending">⏳ 예정</span></td><td>현준 vs 인혁</td><td>율재 vs 재은</td><td>현호 vs 규빈</td><td></td></tr>
+  <tr data-day="5"><td>5일차 <span class="status pending">⏳ 예정</span></td><td>민기 vs 인혁</td><td>태경 vs 재은</td><td>찬규 vs 규빈</td><td></td></tr>
+  <tr data-day="6"><td>6일차 <span class="status pending">⏳ 예정</span></td><td>현준 vs 동운</td><td>율재 vs 현수</td><td>현호 vs 주현</td><td></td></tr>
+  <tr data-day="7"><td>7일차 <span class="status pending">⏳ 예정</span></td><td>민기 vs 현준</td><td>태경 vs 율재</td><td>찬규 vs 현호</td><td></td></tr>
+  <tr data-day="8"><td>8일차 <span class="status pending">⏳ 예정</span></td><td>동운 vs 인혁</td><td>현수 vs 재은</td><td>주현 vs 규빈</td><td></td></tr>
+  <tr data-day="9"><td>9일차 <span class="status pending">⏳ 예정</span></td><td>민기 vs 동운</td><td>태경 vs 현수</td><td>찬규 vs 주현</td><td></td></tr>
+  <tr data-day="10"><td>10일차 <span class="status pending">⏳ 예정</span></td><td>현준 vs 인혁</td><td>율재 vs 재은</td><td>현호 vs 규빈</td><td></td></tr>
+  <tr data-day="11"><td>11일차 <span class="status pending">⏳ 예정</span></td><td>민기 vs 인혁</td><td>태경 vs 재은</td><td>찬규 vs 규빈</td><td></td></tr>
+  <tr data-day="12"><td>12일차 <span class="status pending">⏳ 예정</span></td><td>현준 vs 동운</td><td>율재 vs 현수</td><td>현호 vs 주현</td><td></td></tr>
+  <tr data-day="13"><td>13일차 <span class="status pending">⏳ 예정</span></td><td>민기 vs 현준</td><td>태경 vs 율재</td><td>찬규 vs 현호</td><td></td></tr>
+  <tr data-day="14"><td>14일차 <span class="status pending">⏳ 예정</span></td><td>동운 vs 인혁</td><td>현수 vs 재은</td><td>주현 vs 규빈</td><td></td></tr>
+  <tr data-day="15"><td>15일차 <span class="status pending">⏳ 예정</span></td><td>민기 vs 동운</td><td>태경 vs 현수</td><td>찬규 vs 주현</td><td></td></tr>
+  <tr data-day="16"><td>16일차 <span class="status pending">⏳ 예정</span></td><td>현준 vs 인혁</td><td>율재 vs 재은</td><td>현호 vs 규빈</td><td></td></tr>
+  <tr data-day="17"><td>17일차 <span class="status pending">⏳ 예정</span></td><td>민기 vs 인혁</td><td>태경 vs 재은</td><td>찬규 vs 규빈</td><td></td></tr>
+  <tr data-day="18"><td>18일차 <span class="status pending">⏳ 예정</span></td><td>현준 vs 동운</td><td>율재 vs 현수</td><td>현호 vs 주현</td><td></td></tr>
+</tbody>
+    </table>
+  </div>
+
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    const tableBody = document.getElementById('matchTable').getElementsByTagName('tbody')[0];
+    const matchDaySelect = document.getElementById('matchDay');
+    const updateBtn = document.getElementById('updateBtn');
+
+    // 일차 선택 옵션 자동 생성
+    const rows = tableBody.getElementsByTagName('tr');
+    for (let i = 0; i < rows.length; i++) {
+      let day = rows[i].getAttribute('data-day');
+      let option = document.createElement('option');
+      option.value = day;
+      option.textContent = day + "일차";
+      matchDaySelect.appendChild(option);
+    }
+
+    // 검색 기능
+    searchInput.addEventListener('keyup', function() {
+      const filter = searchInput.value.toLowerCase();
+      for (let i = 0; i < rows.length; i++) {
+        let rowText = rows[i].innerText.toLowerCase();
+        rows[i].style.display = rowText.includes(filter) ? '' : 'none';
+      }
+    });
+
+    // 관리자 업데이트 기능
+    updateBtn.addEventListener('click', function() {
+      let selectedDay = matchDaySelect.value;
+      let status = document.getElementById('matchStatus').value;
+      let highlightUrl = document.getElementById('highlightUrl').value;
+
+      if (!selectedDay) {
+        alert("일차를 선택하세요.");
+        return;
+      }
+
+      let targetRow = document.querySelector(`tr[data-day='${selectedDay}']`);
+      if (targetRow) {
+        let statusSpan = targetRow.querySelector('.status');
+        statusSpan.textContent = status;
+        statusSpan.className = "status " + (status.includes("끝남") ? "done" : "pending");
+
+        // 하이라이트 버튼 생성
+        let lastCell = targetRow.lastElementChild;
+        lastCell.innerHTML = "";
+        if (highlightUrl) {
+          let btn = document.createElement("button");
+          btn.textContent = "🎥 보기";
+          btn.className = "highlight-btn";
+          btn.onclick = () => window.open(highlightUrl, "_blank");
+          lastCell.appendChild(btn);
+        }
+      }
+    });
+  </script>
+</body>
+</html>
