@@ -1,272 +1,88 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>피파 경기 일정</title>
-  <style>
-    body { font-family: Arial, sans-serif; background: #f4f6f8; margin:0; padding:0; }
-    header { background:#222; color:#fff; padding:15px; text-align:center; font-size:1.4em; font-weight:bold; }
-    .search-box { text-align:center; margin:15px 0; }
-    .search-box input { padding:8px; font-size:1em; width:80%; max-width:400px; border:1px solid #ccc; border-radius:5px; }
-    .table-container { overflow-x:auto; padding:0 10px; }
-    table { min-width:800px; width:100%; border-collapse:collapse; background:#fff; box-shadow:0 4px 8px rgba(0,0,0,0.1); }
-    th, td { border:1px solid #ddd; padding:10px; text-align:center; white-space:nowrap; }
-    th { background:#333; color:white; }
-    tr:nth-child(even) { background:#f9f9f9; }
-    tr:hover { background:#f1f1f1; }
-    .status { font-size:0.85em; display:block; margin-top:3px; }
-    .done { color: green; }
-    .pending { color: orange; }
-    .highlight-btn { background:#007BFF; color:white; padding:5px 8px; border:none; border-radius:4px; cursor:pointer; margin:2px; }
-    .highlight-btn:hover { background:#0056b3; }
-    .admin-panel { background:#fff; padding:15px; margin:20px auto; width:90%; max-width:600px; border:1px solid #ccc; border-radius:8px; }
-    .admin-panel h3 { margin-top:0; }
-    .admin-panel input, .admin-panel select { width:100%; padding:8px; margin:5px 0 10px; border:1px solid #ccc; border-radius:4px; }
-    .admin-panel button { background:#28a745; color:white; padding:8px; border:none; border-radius:4px; cursor:pointer; }
-    .admin-panel button:hover { background:#218838; }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>피파 균등 경기 일정</title>
+<style>
+body{ margin:0; font-family: Arial, sans-serif; background:#f0f2f5; color:#000; }
+header{ padding:16px; text-align:center; font-weight:700; font-size:1.5em; border-bottom:1px solid #ccc; background:#222; color:#fff; }
+.container{ max-width:900px; margin:20px auto; padding:0 16px; }
+.day{ margin-bottom:25px; }
+.date-bar{ font-weight:700; font-size:1.1rem; margin-bottom:10px; border-left:4px solid #007BFF; padding-left:8px; background:#fff; color:#007BFF; display:inline-block; padding:4px 8px; border-radius:4px;}
+.match-grid{ display:grid; gap:12px; }
+.match{
+  background:#dcdcdc; border:1px solid #ccc; border-radius:12px; padding:14px 16px;
+  display:grid; grid-template-columns: 1fr auto auto auto 1fr; align-items:center; gap:10px;
+  box-shadow:0 2px 5px rgba(0,0,0,0.1); position:relative; color:#000;
+}
+.time-badge{ position:absolute; top:-10px; left:10px; background:#007BFF; color:#fff; font-weight:700; font-size:0.9rem; padding:2px 8px; border-radius:6px; }
+.group-badge{ position:absolute; top:-10px; right:10px; background:#ff9800; color:#fff; font-weight:700; font-size:0.85rem; padding:2px 6px; border-radius:6px; }
+.team{ text-align:center; font-weight:700; font-size:1rem; background:#e0e0e0; color:#000; padding:4px 8px; border-radius:6px; }
+.name{ display:inline-block; max-width:100%; overflow:hidden; text-overflow:ellipsis; }
+.vs{ color:#333; font-weight:700; padding:0 6px; letter-spacing:.5px; text-align:center; }
+.score{ min-width:36px; min-height:40px; display:flex; align-items:center; justify-content:center;
+  padding:2px 6px; border-radius:6px; border:1px dashed #aaa; font-size:2rem; font-weight:900;
+  font-family: monospace; text-align:center; outline:none; cursor:text; background:#f5f5f5; color:#000;}
+.score:focus{ border-color:#007BFF; box-shadow:0 0 0 3px rgba(0,123,255,0.3); }
+</style>
 </head>
 <body>
-
-<header>⚽ 피파 경기 일정</header>
-
-<!-- 검색 -->
-<div class="search-box">
-  <input type="text" id="searchInput" placeholder="선수 이름으로 검색 (예: 민기)">
-</div>
-
-<!-- 관리자 모드 -->
-<div class="admin-panel">
-  <h3>관리자 경기 업데이트</h3>
-  <label>일차 선택:</label>
-  <select id="matchDay">
-    <option value="">-- 선택 --</option>
-  </select>
-
-  <label>그룹 선택:</label>
-  <select id="groupSelect">
-    <option value="1">Legend</option>
-    <option value="2">Rise</option>
-    <option value="3">Nova</option>
-  </select>
-
-  <label>경기 상태:</label>
-  <select id="matchStatus">
-    <option value="⏳ 예정">⏳ 예정</option>
-    <option value="✅ 끝남">✅ 끝남</option>
-  </select>
-
-  <label>점수 입력:</label>
-  <input type="text" id="matchScore" placeholder="예: 2-1">
-
-  <label>하이라이트 영상 URL:</label>
-  <input type="text" id="highlightUrl" placeholder="유튜브/영상 링크 입력">
-
-  <button id="updateBtn">업데이트</button>
-</div>
-
-<!-- 경기 일정 -->
-<div class="table-container">
-  <table id="matchTable">
-    <thead>
-      <tr>
-        <th>일차</th>
-        <th>Legend</th>
-        <th>Rise</th>
-        <th>Nova</th>
-        <th>하이라이트</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr data-day="1">
-        <td>1일차 <span class="status pending">⏳ 예정</span></td>
-        <td>동운 vs 인혁</td>
-        <td>태경 vs 율재</td>
-        <td>찬규 vs 현호</td>
-        <td></td>
-      </tr>
-      <tr data-day="2">
-        <td>2일차 <span class="status pending">⏳ 예정</span></td>
-        <td>민기 vs 인혁</td>
-        <td>태경 vs 재은</td>
-        <td>찬규 vs 규빈</td>
-        <td></td>
-      </tr>
-      <tr data-day="3">
-        <td>3일차 <span class="status pending">⏳ 예정</span></td>
-        <td>민기 vs 동운</td>
-        <td>태경 vs 현수</td>
-        <td>찬규 vs 주현</td>
-        <td></td>
-      </tr>
-      <tr data-day="4">
-        <td>4일차 <span class="status pending">⏳ 예정</span></td>
-        <td>현준 vs 인혁</td>
-        <td>율재 vs 재은</td>
-        <td>현호 vs 규빈</td>
-        <td></td>
-      </tr>
-      <tr data-day="5">
-        <td>5일차 <span class="status pending">⏳ 예정</span></td>
-        <td>민기 vs 현준</td>
-        <td>현수 vs 재은</td>
-        <td>주현 vs 규빈</td>
-        <td></td>
-      </tr>
-      <tr data-day="6">
-        <td>6일차 <span class="status pending">⏳ 예정</span></td>
-        <td>현준 vs 동운</td>
-        <td>율재 vs 현수</td>
-        <td>현호 vs 주현</td>
-        <td></td>
-      </tr>
-      <tr data-day="7">
-        <td>7일차 <span class="status pending">⏳ 예정</span></td>
-        <td>민기 vs 현준</td>
-        <td>태경 vs 율재</td>
-        <td>찬규 vs 현호</td>
-        <td></td>
-      </tr>
-      <tr data-day="8">
-        <td>8일차 <span class="status pending">⏳ 예정</span></td>
-        <td>동운 vs 인혁</td>
-        <td>현수 vs 재은</td>
-        <td>주현 vs 규빈</td>
-        <td></td>
-      </tr>
-      <tr data-day="9">
-        <td>9일차 <span class="status pending">⏳ 예정</span></td>
-        <td>민기 vs 동운</td>
-        <td>태경 vs 현수</td>
-        <td>찬규 vs 주현</td>
-        <td></td>
-      </tr>
-      <tr data-day="10">
-        <td>10일차 <span class="status pending">⏳ 예정</span></td>
-        <td>현준 vs 인혁</td>
-        <td>율재 vs 재은</td>
-        <td>현호 vs 규빈</td>
-        <td></td>
-      </tr>
-      <tr data-day="11">
-        <td>11일차 <span class="status pending">⏳ 예정</span></td>
-        <td>민기 vs 인혁</td>
-        <td>태경 vs 재은</td>
-        <td>찬규 vs 규빈</td>
-        <td></td>
-      </tr>
-      <tr data-day="12">
-        <td>12일차 <span class="status pending">⏳ 예정</span></td>
-        <td>현준 vs 동운</td>
-        <td>율재 vs 현수</td>
-        <td>현호 vs 주현</td>
-        <td></td>
-      </tr>
-      <tr data-day="13">
-        <td>13일차 <span class="status pending">⏳ 예정</span></td>
-        <td>민기 vs 현준</td>
-        <td>태경 vs 율재</td>
-        <td>찬규 vs 현호</td>
-        <td></td>
-      </tr>
-      <tr data-day="14">
-        <td>14일차 <span class="status pending">⏳ 예정</span></td>
-        <td>동운 vs 인혁</td>
-        <td>현수 vs 재은</td>
-        <td>주현 vs 규빈</td>
-        <td></td>
-      </tr>
-      <tr data-day="15">
-        <td>15일차 <span class="status pending">⏳ 예정</span></td>
-        <td>민기 vs 동운</td>
-        <td>태경 vs 현수</td>
-        <td>찬규 vs 주현</td>
-        <td></td>
-      </tr>
-      <tr data-day="16">
-        <td>16일차 <span class="status pending">⏳ 예정</span></td>
-        <td>현준 vs 인혁</td>
-        <td>율재 vs 재은</td>
-        <td>현호 vs 규빈</td>
-        <td></td>
-      </tr>
-      <tr data-day="17">
-        <td>17일차 <span class="status pending">⏳ 예정</span></td>
-        <td>민기 vs 인혁</td>
-        <td>태경 vs 재은</td>
-        <td>찬규 vs 규빈</td>
-        <td></td>
-      </tr>
-      <tr data-day="18">
-        <td>18일차 <span class="status pending">⏳ 예정</span></td>
-        <td>현준 vs 동운</td>
-        <td>율재 vs 현수</td>
-        <td>현호 vs 주현</td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
+<header>⚽ FC Online 4 Match</header>
+<main class="container">
 <script>
-  const searchInput = document.getElementById('searchInput');
-  const tableBody = document.getElementById('matchTable').getElementsByTagName('tbody')[0];
-  const matchDaySelect = document.getElementById('matchDay');
-  const groupSelect = document.getElementById('groupSelect');
-  const updateBtn = document.getElementById('updateBtn');
+// 그룹별 선수
+const Legend=["민기","동운","현준","인혁"];
+const Rise=["현수","태경","율재","재은"];
+const Nova=["찬규","주현","현호","규빈"];
 
-  // 일차 옵션 생성
-  const rows = tableBody.getElementsByTagName('tr');
-  for(let i=0;i<rows.length;i++){
-    let day = rows[i].getAttribute('data-day');
-    let option = document.createElement('option');
-    option.value = day;
-    option.textContent = day + "일차";
-    matchDaySelect.appendChild(option);
-  }
+// 균등 경기 스케줄
+const schedule = [
+  {date:"8월 17일", matches:[{group:"Legend", t1:"민기", t2:"동운"},{group:"Rise", t1:"재은", t2:"태경"},{group:"Nova", t1:"찬규", t2:"현호"}]},
+  {date:"8월 18일", matches:[{group:"Legend", t1:"현준", t2:"인혁"},{group:"Rise", t1:"율재", t2:"재은"},{group:"Nova", t1:"현호", t2:"규빈"}]},
+  {date:"8월 19일", matches:[{group:"Legend", t1:"민기", t2:"현준"},{group:"Rise", t1:"현수", t2:"율재"},{group:"Nova", t1:"찬규", t2:"주현"}]},
+  {date:"8월 20일", matches:[{group:"Legend", t1:"동운", t2:"인혁"},{group:"Rise", t1:"태경", t2:"현수"},{group:"Nova", t1:"주현", t2:"규빈"}]},
+  {date:"8월 21일", matches:[{group:"Legend", t1:"민기", t2:"인혁"},{group:"Rise", t1:"현수", t2:"재은"},{group:"Nova", t1:"찬규", t2:"규빈"}]},
+  {date:"8월 22일", matches:[{group:"Legend", t1:"현준", t2:"동운"},{group:"Rise", t1:"율재", t2:"태경"},{group:"Nova", t1:"주현", t2:"현호"}]},
+  {date:"8월 23일", matches:[{group:"Legend", t1:"민기", t2:"동운"},{group:"Rise", t1:"현수", t2:"태경"},{group:"Nova", t1:"찬규", t2:"주현"}]},
+  {date:"8월 24일", matches:[{group:"Legend", t1:"현준", t2:"인혁"},{group:"Rise", t1:"율재", t2:"재은"},{group:"Nova", t1:"현호", t2:"규빈"}]},
+  {date:"8월 25일", matches:[{group:"Legend", t1:"민기", t2:"현준"},{group:"Rise", t1:"현수", t2:"율재"},{group:"Nova", t1:"찬규", t2:"현호"}]},
+  {date:"8월 26일", matches:[{group:"Legend", t1:"동운", t2:"인혁"},{group:"Rise", t1:"재은", t2:"태경"},{group:"Nova", t1:"주현", t2:"규빈"}]},
+  {date:"8월 27일", matches:[{group:"Legend", t1:"민기", t2:"인혁"},{group:"Rise", t1:"재은", t2:"현수"},{group:"Nova", t1:"찬규", t2:"규빈"}]},
+  {date:"8월 28일", matches:[{group:"Legend", t1:"동운", t2:"현준"},{group:"Rise", t1:"율재", t2:"태경"},{group:"Nova", t1:"주현", t2:"현호"}]},
+  {date:"8월 29일", matches:[{group:"Legend", t1:"민기", t2:"동운"},{group:"Rise", t1:"현수", t2:"태경"},{group:"Nova", t1:"찬규", t2:"주현"}]},
+  {date:"8월 30일", matches:[{group:"Legend", t1:"현준", t2:"인혁"},{group:"Rise", t1:"재은", t2:"율재"},{group:"Nova", t1:"현호", t2:"규빈"}]},
+  {date:"8월 31일", matches:[{group:"Legend", t1:"민기", t2:"현준"},{group:"Rise", t1:"현수", t2:"율재"},{group:"Nova", t1:"찬규", t2:"현호"}]},
+  {date:"9월 1일", matches:[{group:"Legend", t1:"동운", t2:"인혁"},{group:"Rise", t1:"재은", t2:"태경"},{group:"Nova", t1:"주현", t2:"규빈"}]},
+  {date:"9월 2일", matches:[{group:"Legend", t1:"민기", t2:"인혁"},{group:"Rise", t1:"재은", t2:"현수"},{group:"Nova", t1:"찬규", t2:"규빈"}]},
+  {date:"9월 3일", matches:[{group:"Legend", t1:"현준", t2:"동운"},{group:"Rise", t1:"태경", t2:"율재"},{group:"Nova", t1:"주현", t2:"현호"}]}
+];
 
-  // 검색 기능
-  searchInput.addEventListener('keyup', function(){
-    const filter = searchInput.value.toLowerCase();
-    for(let i=0;i<rows.length;i++){
-      let rowText = rows[i].innerText.toLowerCase();
-      rows[i].style.display = rowText.includes(filter) ? '' : 'none';
-    }
+const matchTimes=["19:00","20:30","21:30"];
+const container = document.querySelector('.container');
+
+schedule.forEach(day=>{
+  const daySection = document.createElement('section');
+  daySection.className='day';
+  daySection.innerHTML=`<div class="date-bar">${day.date}</div>`;
+  const grid=document.createElement('div'); grid.className='match-grid';
+  day.matches.forEach((m,i)=>{
+    const match=document.createElement('div'); match.className='match';
+    match.innerHTML=`
+      <div class="time-badge">${matchTimes[i]}</div>
+      <div class="group-badge">${m.group}</div>
+      <div class="team"><span class="name">${m.t1}</span></div>
+      <div class="score" contenteditable="true"></div>
+      <div class="vs">VS</div>
+      <div class="score" contenteditable="true"></div>
+      <div class="team"><span class="name">${m.t2}</span></div>
+    `;
+    grid.appendChild(match);
   });
-
-  // 관리자 업데이트
-  updateBtn.addEventListener('click', function(){
-    let selectedDay = matchDaySelect.value;
-    let groupIdx = groupSelect.value;
-    let status = document.getElementById('matchStatus').value;
-    let score = document.getElementById('matchScore').value;
-    let highlightUrl = document.getElementById('highlightUrl').value;
-
-    if(!selectedDay){ alert("일차를 선택하세요."); return; }
-    let targetRow = document.querySelector(`tr[data-day='${selectedDay}']`);
-    if(targetRow){
-      // 상태 업데이트
-      let statusSpan = targetRow.querySelector('.status');
-      statusSpan.textContent = status;
-      statusSpan.className = "status " + (status.includes("끝남")?"done":"pending");
-
-      // 점수 업데이트
-      if(score){
-        targetRow.children[groupIdx].textContent += ` (${score})`;
-      }
-
-      // 하이라이트 추가 (여러개 가능)
-      let lastCell = targetRow.lastElementChild;
-      if(highlightUrl){
-        let btn = document.createElement('button');
-        btn.textContent = "🎥 보기";
-        btn.className = "highlight-btn";
-        btn.onclick = ()=>window.open(highlightUrl,"_blank");
-        lastCell.appendChild(btn);
-      }
-    }
-  });
+  daySection.appendChild(grid);
+  container.appendChild(daySection);
+});
 </script>
+</main>
 </body>
 </html>
