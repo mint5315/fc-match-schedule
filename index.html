@@ -3,12 +3,10 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>⚽ FC Online 4 Match 일정</title>
+<title>피파 균등 경기 일정</title>
 <style>
 body{ margin:0; font-family: Arial, sans-serif; background:#f0f2f5; color:#000; }
 header{ padding:16px; text-align:center; font-weight:700; font-size:1.5em; border-bottom:1px solid #ccc; background:#222; color:#fff; }
-nav{ padding:10px; text-align:center; background:#333; }
-nav a{ color:#fff; text-decoration:none; font-weight:700; margin:0 8px; }
 .container{ max-width:900px; margin:20px auto; padding:0 16px; }
 .day{ margin-bottom:25px; }
 .date-bar{ font-weight:700; font-size:1.1rem; margin-bottom:10px; border-left:4px solid #007BFF; padding-left:8px; background:#fff; color:#007BFF; display:inline-block; padding:4px 8px; border-radius:4px;}
@@ -30,10 +28,7 @@ nav a{ color:#fff; text-decoration:none; font-weight:700; margin:0 8px; }
 </style>
 </head>
 <body>
-<header>⚽ FC Online 4 Match 일정</header>
-<nav>
-  <a href="group_list.html">그룹별 선수 보기</a>
-</nav>
+<header>⚽ FC Online 4 Match</header>
 <main class="container">
 <script>
 // 그룹별 선수
@@ -41,7 +36,7 @@ const Legend=["민기","동운","현준","인혁"];
 const Rise=["현수","태경","율재","재은"];
 const Nova=["찬규","주현","현호","규빈"];
 
-// 균등 경기 스케줄 (첫 날 주현/현수/율재 제외)
+// 전체 경기 일정 (8월17일~9월3일), 첫날 주현, 현수, 율재 제외, 한 사람당 6경기
 const schedule = [
   {date:"8월 17일", matches:[
     {group:"Legend", t1:"민기", t2:"동운"},
@@ -52,8 +47,87 @@ const schedule = [
     {group:"Legend", t1:"현준", t2:"인혁"},
     {group:"Rise", t1:"현수", t2:"율재"},
     {group:"Nova", t1:"주현", t2:"규빈"}
+  ]},
+  {date:"8월 19일", matches:[
+    {group:"Legend", t1:"민기", t2:"현준"},
+    {group:"Rise", t1:"현수", t2:"재은"},
+    {group:"Nova", t1:"찬규", t2:"주현"}
+  ]},
+  {date:"8월 20일", matches:[
+    {group:"Legend", t1:"동운", t2:"인혁"},
+    {group:"Rise", t1:"태경", t2:"율재"},
+    {group:"Nova", t1:"주현", t2:"현호"}
+  ]},
+  {date:"8월 21일", matches:[
+    {group:"Legend", t1:"민기", t2:"인혁"},
+    {group:"Rise", t1:"현수", t2:"재은"},
+    {group:"Nova", t1:"찬규", t2:"규빈"}
+  ]},
+  {date:"8월 22일", matches:[
+    {group:"Legend", t1:"현준", t2:"동운"},
+    {group:"Rise", t1:"율재", t2:"태경"},
+    {group:"Nova", t1:"주현", t2:"현호"}
+  ]},
+  {date:"8월 23일", matches:[
+    {group:"Legend", t1:"민기", t2:"동운"},
+    {group:"Rise", t1:"현수", t2:"태경"},
+    {group:"Nova", t1:"찬규", t2:"주현"}
+  ]},
+  {date:"8월 24일", matches:[
+    {group:"Legend", t1:"현준", t2:"인혁"},
+    {group:"Rise", t1:"율재", t2:"재은"},
+    {group:"Nova", t1:"현호", t2:"규빈"}
+  ]},
+  {date:"8월 25일", matches:[
+    {group:"Legend", t1:"민기", t2:"현준"},
+    {group:"Rise", t1:"현수", t2:"율재"},
+    {group:"Nova", t1:"찬규", t2:"현호"}
+  ]},
+  {date:"8월 26일", matches:[
+    {group:"Legend", t1:"동운", t2:"인혁"},
+    {group:"Rise", t1:"재은", t2:"태경"},
+    {group:"Nova", t1:"주현", t2:"규빈"}
+  ]},
+  {date:"8월 27일", matches:[
+    {group:"Legend", t1:"민기", t2:"인혁"},
+    {group:"Rise", t1:"재은", t2:"현수"},
+    {group:"Nova", t1:"찬규", t2:"규빈"}
+  ]},
+  {date:"8월 28일", matches:[
+    {group:"Legend", t1:"동운", t2:"현준"},
+    {group:"Rise", t1:"율재", t2:"태경"},
+    {group:"Nova", t1:"주현", t2:"현호"}
+  ]},
+  {date:"8월 29일", matches:[
+    {group:"Legend", t1:"민기", t2:"동운"},
+    {group:"Rise", t1:"현수", t2:"태경"},
+    {group:"Nova", t1:"찬규", t2:"주현"}
+  ]},
+  {date:"8월 30일", matches:[
+    {group:"Legend", t1:"현준", t2:"인혁"},
+    {group:"Rise", t1:"재은", t2:"율재"},
+    {group:"Nova", t1:"현호", t2:"규빈"}
+  ]},
+  {date:"8월 31일", matches:[
+    {group:"Legend", t1:"민기", t2:"현준"},
+    {group:"Rise", t1:"현수", t2:"율재"},
+    {group:"Nova", t1:"찬규", t2:"현호"}
+  ]},
+  {date:"9월 1일", matches:[
+    {group:"Legend", t1:"동운", t2:"인혁"},
+    {group:"Rise", t1:"재은", t2:"태경"},
+    {group:"Nova", t1:"주현", t2:"규빈"}
+  ]},
+  {date:"9월 2일", matches:[
+    {group:"Legend", t1:"민기", t2:"인혁"},
+    {group:"Rise", t1:"재은", t2:"현수"},
+    {group:"Nova", t1:"찬규", t2:"규빈"}
+  ]},
+  {date:"9월 3일", matches:[
+    {group:"Legend", t1:"현준", t2:"동운"},
+    {group:"Rise", t1:"태경", t2:"율재"},
+    {group:"Nova", t1:"주현", t2:"현호"}
   ]}
-  // 이후 일정은 이미 균등 6경기 맞춘 스케줄 그대로 추가
 ];
 
 const matchTimes=["19:00","20:30","21:30"];
